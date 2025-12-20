@@ -14,7 +14,6 @@ import {
   SiMongodb,
   SiMysql,
   SiGit,
-  SiGithub,
   SiVite,
   SiShadcnui,
   SiMui,
@@ -50,7 +49,6 @@ const Experience = () => {
       href: "https://kafka.apache.org",
     },
     { node: <SiGit />, title: "Git", href: "https://git-scm.com" },
-    // { node: <SiGithub />, title: "GitHub", href: "https://github.com" },
     { node: <SiVite />, title: "Vite", href: "https://vite.dev" },
     {
       node: <SiShadcnui />,
