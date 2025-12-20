@@ -25,7 +25,7 @@ const experiences = [
     period: "Jan 2023 - Mar 2025",
     description: [
       "Built and integrated REST APIs using Node.js + Express, improving microservice communication and cutting backend integration time by 30%.",
-      "Accelerated MongoDB performance using indexing + aggregation pipelines, reducing query latency by 40%.",
+      "Accelerated MongoDB performance using indexing + atlas + aggregation pipelines, reducing query latency by 40%.",
       "Developed UI frontends in React + MUI improving responsiveness and reducing UI defects by 25% post-release.",
       "Shipped production Electron desktop apps, automating workflow status syncing and reducing manual effort by 35%.",
       "Built templated EJS + Bootstrap PDF engine, enabling dynamic reporting and reducingdocument creation time by 50%.",
@@ -36,10 +36,10 @@ const experiences = [
 export default function Timeline() {
   return (
     <div className="w-full mx-auto py-12 md:py-20 px-6 sm:px-6 lg:px-8">
-      <div className="relative ml-3 sm:ml-6 md:ml-10">
+      <div className="relative ml-6 sm:ml-8 md:ml-16">
         {/* Timeline line */}
         <motion.div
-          className="absolute left-0 top-[18px] bottom-0 border-l-2 border-primary/40"
+          className="absolute left-0 top-4.5 bottom-0 border-l-2 border-primary/40"
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
           transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
@@ -51,14 +51,14 @@ export default function Timeline() {
             <ScrollReveal>
               <motion.div
                 key={index}
-                className="relative pl-8 sm:pl-12 md:pl-16 pb-12 last:pb-0"
+                className="relative pl-10 sm:pl-14 md:pl-20 lg:pl-24 pb-12 last:pb-0"
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ delay: index * 0.2, duration: 0.6 }}
               >
                 {/* Timeline dot */}
-                <div className="absolute h-3 w-3 -translate-x-1/2 left-px sm:left-1 top-3 rounded-full border-2 border-primary bg-background" />
+                <div className="absolute h-3 w-3 -translate-x-4/5 left-px sm:left-1 top-3 rounded-full border-2 border-primary bg-background" />
 
                 {/* Content */}
                 <div className="space-y-3">

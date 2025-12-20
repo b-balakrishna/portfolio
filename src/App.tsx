@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Experience from "./components/Experience";
 import Intro from "./components/Intro";
 import Links from "./components/Links";
@@ -5,9 +6,13 @@ import ReferMe from "./components/ReferMe";
 import LightRays from "./ui/LightRays";
 
 const App = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
+
   return (
-    <div>
-      <div className="w-screen h-screen fixed bg-[#121212] pointer-events-none">
+    <div className="bg-[#121212]">
+      <div className="w-screen h-screen fixed  pointer-events-none">
         <LightRays
           raysOrigin="top-center"
           raysColor="#00ffff"
@@ -23,8 +28,8 @@ const App = () => {
       </div>
       <Intro />
       <Experience />
-      {/* <Links />
-      <ReferMe /> */}
+      <Links />
+      <ReferMe />
     </div>
   );
 };
