@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
-    "deploy": "next build && gh-pages -d out",
+    "deploy": "next build && gh-pages -d dist",
     "start": "next start",
     "lint": "next lint"
   },
