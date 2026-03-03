@@ -14,8 +14,7 @@ export function Footer() {
             <span className="text-primary">React 19</span>
           </p>
           <p>
-            DEPLOYED ON{" "}
-            <span className="text-primary">Github static pages</span>
+            DEPLOYED ON <span className="text-primary">Vercel</span>
           </p>
           <p className="text-muted-foreground/60 mt-2">
             {"// NO CHEAT CODES WERE USED IN THE MAKING OF THIS PORTFOLIO"}
