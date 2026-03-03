@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=MedievalSharp&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  /* RETRO THEME (default) */
+  :root,
+  [data-theme="retro"] {
+    --background: 240 20% 6%;
+    --foreground: 120 100% 75%;
+    --card: 240 18% 9%;
+    --card-foreground: 120 100% 75%;
+    --popover: 240 18% 9%;
+    --popover-foreground: 120 100% 75%;
+    --primary: 120 100% 50%;
+    --primary-foreground: 240 20% 6%;
+    --secondary: 240 15% 14%;
+    --secondary-foreground: 120 100% 75%;
+    --muted: 240 15% 14%;
+    --muted-foreground: 120 40% 45%;
+    --accent: 120 100% 50%;
+    --accent-foreground: 240 20% 6%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 120 60% 25%;
+    --input: 120 60% 25%;
+    --ring: 120 100% 50%;
+    --radius: 0px;
+    --heading: 120 100% 85%;
+    --xp: 50 100% 55%;
+    --hp: 0 85% 55%;
+    --mp: 210 100% 60%;
+    --font-heading: 'Press Start 2P', monospace;
+    --font-body: 'Space Mono', monospace;
+  }
+
+  /* CYBERPUNK THEME */
+  [data-theme="cyberpunk"] {
+    --background: 270 30% 5%;
+    --foreground: 300 100% 85%;
+    --card: 270 25% 8%;
+    --card-foreground: 300 100% 85%;
+    --popover: 270 25% 8%;
+    --popover-foreground: 300 100% 85%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 270 30% 5%;
+    --secondary: 270 20% 13%;
+    --secondary-foreground: 300 100% 85%;
+    --muted: 270 20% 13%;
+    --muted-foreground: 300 30% 50%;
+    --accent: 320 100% 60%;
+    --accent-foreground: 270 30% 5%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 180 60% 25%;
+    --input: 180 60% 25%;
+    --ring: 180 100% 50%;
+    --radius: 0px;
+    --heading: 180 100% 80%;
+    --xp: 180 100% 50%;
+    --hp: 320 100% 60%;
+    --mp: 60 100% 55%;
+    --font-heading: 'JetBrains Mono', monospace;
+    --font-body: 'Space Mono', monospace;
+  }
+
+  /* FANTASY RPG THEME */
+  [data-theme="fantasy"] {
+    --background: 30 25% 8%;
+    --foreground: 40 40% 75%;
+    --card: 30 20% 11%;
+    --card-foreground: 40 40% 75%;
+    --popover: 30 20% 11%;
+    --popover-foreground: 40 40% 75%;
+    --primary: 45 100% 55%;
+    --primary-foreground: 30 25% 8%;
+    --secondary: 30 18% 15%;
+    --secondary-foreground: 40 40% 75%;
+    --muted: 30 18% 15%;
+    --muted-foreground: 30 20% 45%;
+    --accent: 45 100% 55%;
+    --accent-foreground: 30 25% 8%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 40% 25%;
+    --input: 40 40% 25%;
+    --ring: 45 100% 55%;
+    --radius: 2px;
+    --heading: 40 60% 88%;
+    --xp: 45 100% 55%;
+    --hp: 0 70% 50%;
+    --mp: 220 80% 60%;
+    --font-heading: 'MedievalSharp', cursive;
+    --font-body: 'Space Mono', monospace;
+  }
+
+  /* TERMINAL / MATRIX THEME */
+  [data-theme="terminal"] {
+    --background: 0 0% 2%;
+    --foreground: 120 100% 65%;
+    --card: 0 0% 4%;
+    --card-foreground: 120 100% 65%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 120 100% 65%;
+    --primary: 120 100% 50%;
+    --primary-foreground: 0 0% 2%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 120 100% 65%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 120 40% 35%;
+    --accent: 120 100% 50%;
+    --accent-foreground: 0 0% 2%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 120 50% 15%;
+    --input: 120 50% 15%;
+    --ring: 120 100% 50%;
+    --radius: 0px;
+    --heading: 120 100% 80%;
+    --xp: 120 100% 50%;
+    --hp: 120 100% 50%;
+    --mp: 120 100% 50%;
+    --font-heading: 'JetBrains Mono', monospace;
+    --font-body: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: hsl(var(--primary) / 0.25);
+  color: hsl(var(--primary));
+}
+
+/* Scanline effect for retro feel */
+[data-theme="retro"] body::after,
+[data-theme="terminal"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
+
+/* Pixel border utility */
+.pixel-border {
+  box-shadow:
+    inset -2px -2px 0 0 hsl(var(--border)),
+    inset 2px 2px 0 0 hsl(var(--border));
+}
+
+/* Stat bar animations */
+@keyframes fill-bar {
+  from { width: 0%; }
+}
+
+.stat-bar-fill {
+  animation: fill-bar 1s ease-out forwards;
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Jumping tooltip */
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.jump {
+  animation: jump 0.6s ease-in-out infinite;
+}
+
+/* Glow effect for cyberpunk */
+[data-theme="cyberpunk"] .glow {
+  text-shadow: 0 0 10px hsl(var(--primary) / 0.6), 0 0 20px hsl(var(--primary) / 0.3);
+}
+
+[data-theme="cyberpunk"] .glow-accent {
+  text-shadow: 0 0 10px hsl(var(--accent) / 0.6), 0 0 20px hsl(var(--accent) / 0.3);
+}
+
+/* ===== THEMED SCROLLBARS ===== */
+
+/* Base scrollbar for all themes */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+/* RETRO scrollbar - chunky pixel style */
+[data-theme="retro"] ::-webkit-scrollbar-track,
+[data-theme="retro"]::-webkit-scrollbar-track {
+  background: hsl(240 20% 6%);
+  border-left: 2px solid hsl(120 60% 25%);
+}
+[data-theme="retro"] ::-webkit-scrollbar-thumb,
+[data-theme="retro"]::-webkit-scrollbar-thumb {
+  background: hsl(120 100% 25%);
+  border: 2px solid hsl(120 100% 50%);
+}
+[data-theme="retro"] ::-webkit-scrollbar-thumb:hover,
+[data-theme="retro"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(120 100% 40%);
+}
+
+/* CYBERPUNK scrollbar - neon glow */
+[data-theme="cyberpunk"] ::-webkit-scrollbar-track,
+[data-theme="cyberpunk"]::-webkit-scrollbar-track {
+  background: hsl(270 30% 5%);
+  border-left: 1px solid hsl(180 60% 20%);
+}
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb,
+[data-theme="cyberpunk"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(180 100% 40%), hsl(320 100% 50%));
+  border: 1px solid hsl(180 100% 50%);
+  box-shadow: inset 0 0 6px hsl(180 100% 50% / 0.3);
+}
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb:hover,
+[data-theme="cyberpunk"]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(180 100% 50%), hsl(320 100% 60%));
+}
+
+/* FANTASY scrollbar - parchment style */
+[data-theme="fantasy"] ::-webkit-scrollbar-track,
+[data-theme="fantasy"]::-webkit-scrollbar-track {
+  background: hsl(30 25% 8%);
+  border-left: 2px solid hsl(40 40% 20%);
+}
+[data-theme="fantasy"] ::-webkit-scrollbar-thumb,
+[data-theme="fantasy"]::-webkit-scrollbar-thumb {
+  background: hsl(40 35% 22%);
+  border: 2px solid hsl(45 100% 45%);
+}
+[data-theme="fantasy"] ::-webkit-scrollbar-thumb:hover,
+[data-theme="fantasy"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(40 40% 30%);
+}
+
+/* TERMINAL scrollbar - minimal green */
+[data-theme="terminal"] ::-webkit-scrollbar-track,
+[data-theme="terminal"]::-webkit-scrollbar-track {
+  background: hsl(0 0% 2%);
+  border-left: 1px solid hsl(120 50% 10%);
+}
+[data-theme="terminal"] ::-webkit-scrollbar-thumb,
+[data-theme="terminal"]::-webkit-scrollbar-thumb {
+  background: hsl(120 100% 20%);
+  border: 1px solid hsl(120 100% 35%);
+}
+[data-theme="terminal"] ::-webkit-scrollbar-thumb:hover,
+[data-theme="terminal"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(120 100% 30%);
+}
+
+/* Firefox scrollbar theming */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.4) hsl(var(--background));
+}
+
+/* ===== PLAYER ANIMATION ===== */
+@keyframes player-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes player-blink-eyes {
+  0%, 92%, 100% { opacity: 1; }
+  95% { opacity: 0; }
+}
+
+.player-idle {
+  animation: player-idle 2s ease-in-out infinite;
+}
+
+.player-eyes {
+  animation: player-blink-eyes 4s step-end infinite;
+}
