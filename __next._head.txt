@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[59374,["/_next/static/chunks/a4c607288b1ec87c.js"],"ViewportBoundary"]
+3:I[59374,["/_next/static/chunks/a4c607288b1ec87c.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+5:I[25529,["/_next/static/chunks/a4c607288b1ec87c.js"],"IconMark"]
+0:{"buildId":"qztoNeRLCn2lezBqrglY2","rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#0a0c1a"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Balakrishna Battula | Frontend Developer - Game Portfolio"}],["$","meta","1",{"name":"description","content":"Frontend Developer portfolio designed as an interactive game. Explore skills, quests, and achievements."}],["$","link","2",{"rel":"icon","href":"/svg/favicon.svg"}],["$","$L5","3",{}]]}]}]}],null]}],"loading":null,"isPartial":false}
