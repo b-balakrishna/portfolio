@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s — ${site.name}`,
   },
   description:
-    "Full-stack, frontend-focused software engineer with 3.5+ years building scalable fintech, SaaS, and desktop products with React, TypeScript, Node.js, and AWS.",
+    "An explorable 3D world built by a full-stack, frontend-focused software engineer with 3.5+ years shipping fintech, SaaS, and desktop products with React, TypeScript, Node.js, and AWS.",
   keywords: [
     "Balakrishna Battula",
     "Software Engineer",
