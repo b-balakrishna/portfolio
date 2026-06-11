@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { SPAWN_Z, XP_PER_QUEST, type StationId } from "../stations";
+import { XP_PER_QUEST, type StationId } from "../stations";
 
 export type GamePhase = "start" | "playing";
 
@@ -20,7 +20,7 @@ type GameState = Readonly<{
   weather: Weather;
   /** Touch input: x = steering, z = throttle (-1 forward, +1 brake/reverse). */
   mobileDir: Readonly<{ x: number; z: number }>;
-  /** Car position mirrored at low frequency for the minimap. */
+  /** Car state mirrored at low frequency: x = lateral offset, z = ring angle θ (unwrapped). */
   playerMapPos: Readonly<{ x: number; z: number }>;
   /** Car speed in world units/s, mirrored at low frequency for the speedometer. */
   speed: number;
@@ -31,6 +31,7 @@ type GameState = Readonly<{
   closePanel: () => void;
   toggleMuted: () => void;
   cycleWeather: () => void;
+  setWeather: (weather: Weather) => void;
   setMobileDir: (x: number, z: number) => void;
   setPlayerMapPos: (x: number, z: number) => void;
   setSpeed: (speed: number) => void;
@@ -43,9 +44,9 @@ export const useGameStore = create<GameState>()((set) => ({
   visited: [],
   xp: 0,
   muted: false,
-  weather: "night",
+  weather: "day",
   mobileDir: { x: 0, z: 0 },
-  playerMapPos: { x: 0, z: SPAWN_Z },
+  playerMapPos: { x: 0, z: 0 },
   speed: 0,
 
   start: () => set({ phase: "playing" }),
@@ -62,6 +63,7 @@ export const useGameStore = create<GameState>()((set) => ({
     set((state) => ({
       weather: weatherOrder[(weatherOrder.indexOf(state.weather) + 1) % weatherOrder.length],
     })),
+  setWeather: (weather) => set({ weather }),
   setMobileDir: (x, z) => set({ mobileDir: { x, z } }),
   setPlayerMapPos: (x, z) => set({ playerMapPos: { x, z } }),
   setSpeed: (speed) => set({ speed }),

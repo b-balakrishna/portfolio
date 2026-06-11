@@ -31,14 +31,14 @@ function StartScreen({ onStart }: Readonly<{ onStart: () => void }>) {
       />
 
       <div className="relative">
-        <p className="font-mono text-xs tracking-[0.4em] text-indigo-300">DEV HIGHWAY v2.0</p>
+        <p className="font-mono text-xs tracking-[0.4em] text-indigo-300">DEV PLANET v3.0</p>
         <h1 className="mt-4 text-balance text-5xl font-semibold tracking-tight text-white md:text-7xl">
           BALAKRISHNA<span className="text-gradient">.EXE</span>
         </h1>
         <p className="mx-auto mt-4 max-w-md text-pretty text-sm leading-relaxed text-zinc-400 md:text-base">
-          A neon highway through a software engineer's career. Drive past 8 billboards, watch the
-          weather turn, and discover 3.5+ years of shipped products — or skip straight to the
-          resume.
+          An endless ring road around a software engineer's career. Race past 8 billboards, cross
+          four climate zones every lap, and discover 3.5+ years of shipped products — or skip
+          straight to the resume.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -91,7 +91,7 @@ export function GameShell() {
       {/* Boot overlay until the first frame */}
       {!ready ? (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#08080d]">
-          <p className="font-mono text-xs tracking-[0.4em] text-indigo-300">LOADING HIGHWAY</p>
+          <p className="font-mono text-xs tracking-[0.4em] text-indigo-300">LOADING PLANET</p>
           <div className="mt-4 h-1 w-48 overflow-hidden rounded-full bg-zinc-800">
             <div className="h-full w-1/2 animate-pulse rounded-full bg-indigo-500" />
           </div>

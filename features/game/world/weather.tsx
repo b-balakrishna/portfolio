@@ -16,7 +16,7 @@ import {
 } from "three";
 
 import { useGameStore, type Weather } from "../state/game-store";
-import { ROAD_LENGTH } from "../stations";
+import { PLANET_R } from "../stations";
 
 type Palette = Readonly<{
   sky: string;
@@ -43,7 +43,7 @@ const palettes: Record<Weather, Palette> = {
     sunIntensity: 1.6,
     ambient: 0.75,
     discColor: "#fff7d6",
-    discY: 80,
+    discY: 165,
     stars: false,
     rain: false,
   },
@@ -56,7 +56,7 @@ const palettes: Record<Weather, Palette> = {
     sunIntensity: 1.0,
     ambient: 0.45,
     discColor: "#ff7a3c",
-    discY: 18,
+    discY: 84,
     stars: false,
     rain: false,
   },
@@ -69,7 +69,7 @@ const palettes: Record<Weather, Palette> = {
     sunIntensity: 0.22,
     ambient: 0.3,
     discColor: "#dfe6ff",
-    discY: 60,
+    discY: 145,
     stars: true,
     rain: false,
   },
@@ -82,7 +82,7 @@ const palettes: Record<Weather, Palette> = {
     sunIntensity: 0.35,
     ambient: 0.38,
     discColor: "#26303f",
-    discY: 70,
+    discY: 150,
     stars: false,
     rain: true,
   },
@@ -109,11 +109,12 @@ function RainField() {
   useFrame((state, dt) => {
     const inst = mesh.current;
     if (!inst) return;
-    const { x: px, z: pz } = useGameStore.getState().playerMapPos;
+    // The car always sits on top of the globe at z ≈ 0, y ≈ PLANET_R.
+    const { x: px } = useGameStore.getState().playerMapPos;
     drops.forEach((drop, i) => {
       drop.y -= drop.speed * dt;
       if (drop.y < 0) drop.y = RAIN_HEIGHT;
-      dummy.position.set(px + drop.x, drop.y, pz + drop.z);
+      dummy.position.set(px + drop.x, PLANET_R - 6 + drop.y, drop.z);
       dummy.updateMatrix();
       inst.setMatrixAt(i, dummy.matrix);
     });
@@ -197,9 +198,9 @@ export function WeatherSystem() {
       <directionalLight ref={sun} position={[40, 60, -30]} intensity={0.25} color="#7c8ad9" />
       <hemisphereLight args={["#312e81", "#08080d", 0.35]} />
 
-      {/* Sun / moon disc on the horizon down the road */}
-      <mesh ref={disc} position={[35, 60, ROAD_LENGTH / 2 + 60]}>
-        <sphereGeometry args={[9, 24, 24]} />
+      {/* Sun / moon disc beyond the planet's horizon */}
+      <mesh ref={disc} position={[45, PLANET_R + 40, 150]}>
+        <sphereGeometry args={[10, 24, 24]} />
         <meshStandardMaterial
           color="#dfe6ff"
           emissive="#dfe6ff"

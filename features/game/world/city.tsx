@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { CanvasTexture } from "three";
 
-import { ROAD_LENGTH } from "../stations";
+import { PlanetItem } from "./planet-surface";
 
 /** Deterministic pseudo-random in [0, 1) — stable across renders. */
 function rand(seed: number): number {
@@ -71,46 +71,47 @@ function makeSignTexture(text: string, color: string): CanvasTexture {
 }
 
 type Tower = Readonly<{
-  x: number;
-  z: number;
+  theta: number;
+  lateral: number;
   w: number;
   h: number;
   d: number;
   sign?: Readonly<{ text: string; color: string }>;
 }>;
 
+const TOWERS_PER_ROW = 26;
+
 function buildTowers(): readonly Tower[] {
   const towers: Tower[] = [];
   let signIdx = 0;
   for (let side = -1; side <= 1; side += 2) {
     for (let row = 0; row < 2; row++) {
-      const baseX = side * (22 + row * 14);
-      const step = 16 + row * 4;
-      const count = Math.floor((ROAD_LENGTH + 40) / step);
-      for (let i = 0; i < count; i++) {
+      const baseLat = side * (20 + row * 13);
+      for (let i = 0; i < TOWERS_PER_ROW; i++) {
         const seed = side * 1000 + row * 100 + i;
-        const z = -(ROAD_LENGTH + 40) / 2 + i * step + rand(seed) * 6;
-        const h = 7 + rand(seed + 1) * (row === 0 ? 16 : 26);
+        // The city occupies the night/storm hemisphere; nature owns the other half.
+        const theta = Math.PI + (i / TOWERS_PER_ROW) * Math.PI + rand(seed) * 0.08;
+        const h = 7 + rand(seed + 1) * (row === 0 ? 14 : 22);
         const w = 5 + rand(seed + 2) * 5;
         const d = 5 + rand(seed + 3) * 5;
-        const x = baseX + (rand(seed + 4) - 0.5) * 6 * side;
+        const lateral = baseLat + (rand(seed + 4) - 0.5) * 6 * side;
         // Front-row towers occasionally carry a neon tech sign facing the road.
         const sign =
-          row === 0 && rand(seed + 5) > 0.62
+          row === 0 && rand(seed + 5) > 0.6
             ? {
                 text: SIGNS[signIdx % SIGNS.length],
                 color: SIGN_COLORS[signIdx % SIGN_COLORS.length],
               }
             : undefined;
         if (sign) signIdx++;
-        towers.push({ x, z, w, h, d, sign });
+        towers.push({ theta, lateral, w, h, d, sign });
       }
     }
   }
   return towers;
 }
 
-/** Procedural skyline with lit windows and neon tech-stack signs. */
+/** Procedural skyline wrapped around the planet, with neon tech-stack signs. */
 export function City() {
   const windowTexture = useMemo(makeWindowTexture, []);
   const towers = useMemo(buildTowers, []);
@@ -126,44 +127,46 @@ export function City() {
 
   return (
     <group>
-      {towers.map((t, i) => (
-        <group key={i} position={[t.x, 0, t.z]}>
-          <mesh position={[0, t.h / 2, 0]}>
-            <boxGeometry args={[t.w, t.h, t.d]} />
-            <meshStandardMaterial
-              color="#10101a"
-              roughness={0.85}
-              emissiveMap={windowTexture}
-              emissive="#ffffff"
-              emissiveIntensity={0.8}
-            />
-          </mesh>
-          {/* Rooftop beacon on tall towers */}
-          {t.h > 22 ? (
-            <mesh position={[0, t.h + 0.3, 0]}>
-              <sphereGeometry args={[0.18, 8, 8]} />
-              <meshStandardMaterial color="#f43f5e" emissive="#f43f5e" emissiveIntensity={2.5} />
-            </mesh>
-          ) : null}
-          {/* Neon sign facing the road */}
-          {t.sign ? (
-            <mesh
-              position={[t.x > 0 ? -t.w / 2 - 0.05 : t.w / 2 + 0.05, t.h * 0.65, 0]}
-              rotation={[0, t.x > 0 ? -Math.PI / 2 : Math.PI / 2, 0]}
-            >
-              <planeGeometry args={[4.4, 1.1]} />
+      {towers.map((t, i) => {
+        const signRotY = t.lateral > 0 ? -Math.PI / 2 : Math.PI / 2;
+        return (
+          <PlanetItem key={i} theta={t.theta} lateral={t.lateral}>
+            <mesh position={[0, t.h / 2, 0]}>
+              <boxGeometry args={[t.w, t.h, t.d]} />
               <meshStandardMaterial
-                map={signTextures.get(t.sign.text) ?? null}
-                emissiveMap={signTextures.get(t.sign.text) ?? null}
+                color="#10101a"
+                roughness={0.85}
+                emissiveMap={windowTexture}
                 emissive="#ffffff"
-                emissiveIntensity={1.3}
-                toneMapped={false}
-                transparent
+                emissiveIntensity={0.8}
               />
             </mesh>
-          ) : null}
-        </group>
-      ))}
+            {/* Rooftop beacon on tall towers */}
+            {t.h > 20 ? (
+              <mesh position={[0, t.h + 0.3, 0]}>
+                <sphereGeometry args={[0.18, 8, 8]} />
+                <meshStandardMaterial color="#f43f5e" emissive="#f43f5e" emissiveIntensity={2.5} />
+              </mesh>
+            ) : null}
+            {/* Neon sign facing the road */}
+            {t.sign ? (
+              <group rotation={[0, signRotY, 0]}>
+                <mesh position={[0, t.h * 0.65, t.w / 2 + 0.05]}>
+                  <planeGeometry args={[4.4, 1.1]} />
+                  <meshStandardMaterial
+                    map={signTextures.get(t.sign.text) ?? null}
+                    emissiveMap={signTextures.get(t.sign.text) ?? null}
+                    emissive="#ffffff"
+                    emissiveIntensity={1.3}
+                    toneMapped={false}
+                    transparent
+                  />
+                </mesh>
+              </group>
+            ) : null}
+          </PlanetItem>
+        );
+      })}
     </group>
   );
 }

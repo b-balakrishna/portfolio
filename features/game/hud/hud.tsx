@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useGameStore, levelForXp, type Weather } from "../state/game-store";
 import { sfx } from "../lib/sound";
-import { BILLBOARD_X, ROAD_LENGTH, XP_PER_QUEST, stations } from "../stations";
+import { XP_PER_QUEST, angleDelta, stations, wrapAngle } from "../stations";
 
 const weatherIcon: Record<Weather, typeof Sun> = {
   day: Sun,
@@ -22,37 +22,41 @@ const weatherLabel: Record<Weather, string> = {
   storm: "Storm",
 };
 
-/** Vertical road-strip minimap. */
+/** Orbit minimap: the ring road as a circle, car fixed at the top. */
 function Minimap() {
   const playerPos = useGameStore((s) => s.playerMapPos);
   const visited = useGameStore((s) => s.visited);
+  const theta = playerPos.z;
 
-  const top = (z: number) => `${((z + ROAD_LENGTH / 2) / ROAD_LENGTH) * 92 + 4}%`;
-  const left = (x: number) => `${50 + (x / (BILLBOARD_X + 4)) * 38}%`;
+  // Station dots rotate around the dial as the car drives; car stays at 12 o'clock.
+  const dot = (stationTheta: number) => {
+    const phi = angleDelta(stationTheta, theta);
+    return {
+      left: `${50 + 38 * Math.sin(phi)}%`,
+      top: `${50 - 38 * Math.cos(phi)}%`,
+    };
+  };
 
   return (
     <div
-      aria-label="Road map"
-      className="relative h-40 w-14 rounded-lg border border-indigo-500/30 bg-[#0a0a12]/80 backdrop-blur-sm"
+      aria-label="Planet map"
+      className="relative h-28 w-28 rounded-full border border-indigo-500/30 bg-[#0a0a12]/80 backdrop-blur-sm"
     >
-      {/* Road line */}
-      <div className="absolute bottom-2 left-1/2 top-2 w-1.5 -translate-x-1/2 rounded-full bg-zinc-800" />
+      {/* Ring road */}
+      <div className="absolute inset-[14%] rounded-full border-2 border-zinc-800" />
       {stations.map((s) => (
         <span
           key={s.id}
           className="absolute h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
-            left: left(s.side * BILLBOARD_X),
-            top: top(s.z),
+            ...dot(s.theta),
             background: visited.includes(s.id) ? "#34d399" : s.color,
             boxShadow: `0 0 6px ${s.color}`,
           }}
         />
       ))}
-      <span
-        className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_8px_#fff]"
-        style={{ left: left(playerPos.x), top: top(playerPos.z) }}
-      />
+      {/* Car — fixed at the top of the dial */}
+      <span className="absolute left-1/2 top-[12%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_8px_#fff]" />
     </div>
   );
 }
@@ -85,7 +89,7 @@ function QuestLog() {
       </ul>
       {visited.length === stations.length ? (
         <p className="mt-2 font-mono text-[10px] tracking-widest text-emerald-400">
-          ★ HIGHWAY 100% EXPLORED
+          ★ PLANET 100% EXPLORED
         </p>
       ) : null}
     </div>
@@ -104,17 +108,15 @@ export function Hud() {
   const cycleWeather = useGameStore((s) => s.cycleWeather);
   const openPanel = useGameStore((s) => s.openPanel);
 
+  const playerPos = useGameStore((s) => s.playerMapPos);
+
   const level = levelForXp(xp);
   const levelProgress = ((xp % (XP_PER_QUEST * 2)) / (XP_PER_QUEST * 2)) * 100;
   const near = stations.find((s) => s.id === nearStation);
   const WeatherIcon = weatherIcon[weather];
   const kmh = Math.round(Math.abs(speed) * 3.6);
-
-  // Weather drifts on its own every 50s.
-  useEffect(() => {
-    const id = setInterval(() => useGameStore.getState().cycleWeather(), 50_000);
-    return () => clearInterval(id);
-  }, []);
+  const lap = Math.max(1, Math.floor(playerPos.z / (Math.PI * 2)) + 1);
+  const lapProgress = Math.round((wrapAngle(playerPos.z) / (Math.PI * 2)) * 100);
 
   // "+XP" toast on quest completion.
   const [toast, setToast] = useState<string | null>(null);
@@ -164,8 +166,8 @@ export function Hud() {
               cycleWeather();
               if (!muted) sfx.blip();
             }}
-            aria-label={`Change weather (current: ${weatherLabel[weather]})`}
-            title={weatherLabel[weather]}
+            aria-label={`Change weather (current: ${weatherLabel[weather]}; changes automatically as you lap the planet)`}
+            title={`${weatherLabel[weather]} — changes automatically as you drive around the planet`}
             className="flex h-9 items-center gap-2 rounded-md border border-indigo-500/30 bg-[#0a0a12]/85 px-3 font-mono text-[11px] tracking-wider text-indigo-300 backdrop-blur-sm hover:bg-indigo-500/15"
           >
             <WeatherIcon className="h-4 w-4" />
@@ -193,11 +195,19 @@ export function Hud() {
         <QuestLog />
       </div>
 
-      {/* Minimap + speedometer */}
+      {/* Minimap + speedometer + lap counter */}
       <div className="absolute bottom-4 right-4 flex items-end gap-3">
-        <div className="rounded-lg border border-indigo-500/30 bg-[#0a0a12]/85 px-3 py-2 text-right backdrop-blur-sm">
-          <p className="font-mono text-2xl font-bold leading-none text-white">{kmh}</p>
-          <p className="font-mono text-[9px] tracking-[0.25em] text-zinc-500">KM/H</p>
+        <div className="flex flex-col gap-2">
+          <div className="rounded-lg border border-indigo-500/30 bg-[#0a0a12]/85 px-3 py-2 text-right backdrop-blur-sm">
+            <p className="font-mono text-[10px] tracking-[0.2em] text-indigo-300">
+              LAP {lap}
+            </p>
+            <p className="font-mono text-[9px] text-zinc-500">{lapProgress}% AROUND</p>
+          </div>
+          <div className="rounded-lg border border-indigo-500/30 bg-[#0a0a12]/85 px-3 py-2 text-right backdrop-blur-sm">
+            <p className="font-mono text-2xl font-bold leading-none text-white">{kmh}</p>
+            <p className="font-mono text-[9px] tracking-[0.25em] text-zinc-500">KM/H</p>
+          </div>
         </div>
         <Minimap />
       </div>

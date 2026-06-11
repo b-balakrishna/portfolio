@@ -6,6 +6,7 @@ import { CanvasTexture, Mesh } from "three";
 
 import { useGameStore } from "../state/game-store";
 import { BILLBOARD_X, type Station } from "../stations";
+import { PlanetItem } from "./planet-surface";
 
 const TEX_W = 640;
 const TEX_H = 360;
@@ -32,11 +33,9 @@ function drawBillboard(canvas: HTMLCanvasElement, station: Station, visited: boo
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  // Background
   ctx.fillStyle = "#0b0b15";
   ctx.fillRect(0, 0, TEX_W, TEX_H);
 
-  // Border glow
   ctx.strokeStyle = station.color;
   ctx.lineWidth = 10;
   ctx.strokeRect(8, 8, TEX_W - 16, TEX_H - 16);
@@ -44,18 +43,15 @@ function drawBillboard(canvas: HTMLCanvasElement, station: Station, visited: boo
   ctx.lineWidth = 22;
   ctx.strokeRect(16, 16, TEX_W - 32, TEX_H - 32);
 
-  // Eyebrow
   ctx.fillStyle = station.color;
   ctx.font = "600 22px monospace";
   ctx.textAlign = "center";
   ctx.fillText(visited ? "✓ QUEST COMPLETE" : "◆ NEW QUEST", TEX_W / 2, 70);
 
-  // Title
   ctx.fillStyle = "#f4f4f8";
   ctx.font = "700 58px system-ui, sans-serif";
   ctx.fillText(station.label.toUpperCase(), TEX_W / 2, 140);
 
-  // Tagline (wrapped)
   ctx.fillStyle = "#9d9db2";
   ctx.font = "400 24px system-ui, sans-serif";
   const lines = wrapText(ctx, station.tagline, TEX_W - 110);
@@ -63,10 +59,9 @@ function drawBillboard(canvas: HTMLCanvasElement, station: Station, visited: boo
     ctx.fillText(line, TEX_W / 2, 195 + i * 34);
   });
 
-  // Call to action
   ctx.fillStyle = visited ? "#34d399" : station.color;
   ctx.font = "600 20px monospace";
-  ctx.fillText(visited ? "DRIVE ON, EXPLORER" : "PULL OVER · PRESS E", TEX_W / 2, TEX_H - 42);
+  ctx.fillText(visited ? "DRIVE ON, RACER" : "SLOW DOWN · PRESS E", TEX_W / 2, TEX_H - 42);
 }
 
 export function Billboard({ station }: Readonly<{ station: Station }>) {
@@ -95,12 +90,11 @@ export function Billboard({ station }: Readonly<{ station: Station }>) {
     glowRing.current.scale.setScalar(pulse);
   });
 
-  const x = station.side * BILLBOARD_X;
   // Face the road center.
   const rotY = station.side === 1 ? -Math.PI / 2 : Math.PI / 2;
 
   return (
-    <group position={[x, 0, station.z]} rotation={[0, rotY, 0]}>
+    <PlanetItem theta={station.theta} lateral={station.side * BILLBOARD_X} rotY={rotY}>
       {/* Posts */}
       {[-2.6, 2.6].map((off) => (
         <mesh key={off} position={[off, 2.2, -0.25]}>
@@ -136,11 +130,7 @@ export function Billboard({ station }: Readonly<{ station: Station }>) {
       />
 
       {/* Pull-over marker on the shoulder */}
-      <mesh
-        ref={glowRing}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.02, 3.6]}
-      >
+      <mesh ref={glowRing} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 3.6]}>
         <ringGeometry args={[1.5, 1.78, 40]} />
         <meshBasicMaterial
           color={visited ? "#34d399" : station.color}
@@ -148,6 +138,6 @@ export function Billboard({ station }: Readonly<{ station: Station }>) {
           opacity={near ? 0.95 : 0.4}
         />
       </mesh>
-    </group>
+    </PlanetItem>
   );
 }
