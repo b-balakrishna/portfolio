@@ -58,7 +58,7 @@ export const roles: readonly Role[] = [
   {
     company: "Smart Food Safe",
     title: "Software Developer",
-    period: "Jul 2022 — Mar 2025",
+    period: "Jan 2023 — Mar 2025",
     location: "Bengaluru",
     current: false,
     summary: "Full-stack product engineering for food-safety compliance SaaS.",
